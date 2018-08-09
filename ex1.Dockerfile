@@ -1,17 +1,17 @@
 # example 1
 FROM maven:3.5-jdk-8-alpine
 
-WORKDIR /code
+WORKDIR /src/app
 
 # Prepare by downloading dependencies
-ADD pom.xml /code/pom.xml
+ADD pom.xml /src/app/pom.xml
 
 # This will download most* of the dependencies required for the build
 # and cache them for as long as the pom.xml doesn’t change
 RUN ["mvn", "dependency:go-offline"]
 
 # Adding source, compile and package into a fat jar
-ADD src /code/src
+ADD src /src/app/src
 RUN ["mvn", "package"]
 
 CMD exec java -jar target/docker-java-1.0-SNAPSHOT.jar
@@ -24,3 +24,7 @@ CMD exec java -jar target/docker-java-1.0-SNAPSHOT.jar
 # Note #
 # This build has a weakness that it put all src code and dependencies in the final image.
 # This could be very bad for application that have lots of dependencies.
+
+# Run script #
+# build docker image  : `docker build -t minh/docker-java:1.0 .`
+# run docker container: `docker run --name spring-example -d -p 8080:8080 minh/docker-java:1.0`:

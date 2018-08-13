@@ -17,7 +17,7 @@ ENTRYPOINT ["/usr/bin/mvn"]
 
 # Run script #
 # build docker image : `docker build -f ex3.builder.Dockerfile -t minh/docker-java-builder:3.0 .`
-# build jar file     : `docker run -it --rm -v $PWD/target:/src/app/target minh/docker-java-builder:3.0 package -Dmaven.test.skip=true`:
+# build jar file     : `docker run -it --rm -v $PWD/target:/src/app/target minh/docker-java-builder:3.0 package -Dmaven.test.skip=true`
 # then check ex3.Dockerfile to build and run app container.
 
 # Build command breakdown #

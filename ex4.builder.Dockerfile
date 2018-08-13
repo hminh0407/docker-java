@@ -2,11 +2,10 @@
 
 # In order not to re-download everything each time pom.xml file changed, we need a persistent storage for mvn cache
 # There are 2 options to re-use mvn cache and prevent dependencies re-downloaded on every build
-# To know the different between them, check https://docs.docker.com/storage/volumes/
-# 1. Bind mounts (mount container's mvn repo with a host folder)
+# 1. Bind Mounts (https://docs.docker.com/storage/bind-mounts)
 #    * -v "$HOME"/.m2:root/.m2 (can re-use local mvn repo)
 #    * -v "$PWD"/.m2:root/.m2  (or use any specific folder)
-# 2. Named Volume (named volume will not be deleted when delete a container and can be shared between containers)
+# 2. Named Volume (https://docs.docker.com/storage/volumes/)
 #    * -v mvn-cache:root/.m2 (a new volume with name 'mvn-cache' is created and mount with container's dir)
 
 FROM maven:3.5-jdk-8-alpine
@@ -23,15 +22,15 @@ ADD src /src/app/src
 
 ENTRYPOINT ["/usr/bin/mvn"]
 
-### 1. Host Mounting ###
+### 1. Bind Mounts ###
 # We can re-use the maven host repo or specify a directory
 #    * -v "$HOME"/.m2:root/.m2 (can re-use local mvn repo)
 #    * -v "$PWD"/.m2:root/.m2  (or use any specific folder)
 
 # Run script #
 # build docker image : `docker build -f ex4.builder.Dockerfile -t minh/docker-java-builder:4.0 .`
-# build jar file     : `docker run -it --rm -v $PWD/target:/src/app/target -v "$HOME"/.m2:/root/.m2 minh/docker-java-builder:4.0 package -Dmaven.test.skip=true`:
-# run app container  : `docker run --name docker-java -d -p 8080:8080 -v $(pwd)/target:/src/app -w /src/app openjdk:8-alpine /bin/sh -c 'java -jar docker-java-1.0-SNAPSHOT.jar'`:
+# build jar file     : `docker run -it --rm -v $PWD/target:/src/app/target -v "$HOME"/.m2:/root/.m2 minh/docker-java-builder:4.0 package -Dmaven.test.skip=true`
+# run app container  : `docker run --name docker-java -d -p 8080:8080 -v $(pwd)/target:/src/app -w /src/app openjdk:8-alpine /bin/sh -c 'java -jar docker-java-1.0-SNAPSHOT.jar'`
 
 # Build command breakdown #
 # docker run -it                             (interactive run, show log on command)
@@ -50,7 +49,7 @@ ENTRYPOINT ["/usr/bin/mvn"]
 #             /bin/sh -c 'java -jar docker-java-1.0-SNAPSHOT.jar' (has to run with a bash process or else java library won't load as expected)
 
 
-### 2. Named volume ###
+### 2. Named Volume ###
 
 # Run script #
 # create a repo volume  : `docker volume create docker-java-repo`
@@ -103,4 +102,4 @@ ENTRYPOINT ["/usr/bin/mvn"]
 # It is obvious that we're having issue with user's permission when running a script with a non-root user and trying to delete root's files
 #
 # More on the user's permission can be read here: https://medium.com/@mccode/understanding-how-uid-and-gid-work-in-docker-containers-c37a01d01cf
-# One important note that default user of a container is root. You may want to remember to analyze any security risk.
+# One important note that default user of a container is root and it map with host root. You may want to remember to analyze any security risk.

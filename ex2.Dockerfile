@@ -1,4 +1,4 @@
-# example 2
+# example 2 - Multistage Build
 FROM maven:3.5-jdk-8-alpine as builder
 
 WORKDIR /src/app
@@ -26,6 +26,7 @@ CMD exec java -jar spring-tutorial-1.0-SNAPSHOT.jar
 # But still it has one weakness that whenever pom.xml files change, the whole dependencies will be re-downloaded
 
 # Run script #
-# build docker image  : `docker build -f ex2.Dockerfile -t minh/docker-java:1.0 .`
-# run docker container: `docker run --name docker-java -d -p 8080:8080 minh/docker-java:1.0`:
+# build docker image  : `docker build -f ex2.Dockerfile -t minh/docker-java:2.0 .`
+# run docker container: `docker run --name docker-java -d -p 8080:8080 minh/docker-java:2.0`:
+# check localhost:8080/greeting
 

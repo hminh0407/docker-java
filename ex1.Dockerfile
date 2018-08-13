@@ -1,4 +1,4 @@
-# example 1
+# example 1 - All in 1 Dockerfile
 FROM maven:3.5-jdk-8-alpine
 
 WORKDIR /src/app
@@ -26,5 +26,6 @@ CMD exec java -jar target/docker-java-1.0-SNAPSHOT.jar
 # This could be very bad for application that have lots of dependencies.
 
 # Run script #
-# build docker image  : `docker build -t minh/docker-java:1.0 .`
+# build docker image  : `docker build -f ex1.Dockerfile -t minh/docker-java:1.0 .`
 # run docker container: `docker run --name spring-example -d -p 8080:8080 minh/docker-java:1.0`:
+# check localhost:8080/greeting

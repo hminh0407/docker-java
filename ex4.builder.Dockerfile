@@ -55,7 +55,7 @@ ENTRYPOINT ["/usr/bin/mvn"]
 # create a repo volume  : `docker volume create docker-java-repo`
 # create a build volume : `docker volume create docker-java-build`
 # build docker image    : `docker build -f ex4.builder.Dockerfile -t minh/docker-java-builder:4.0 .`
-# build jar file        : `docker run -it --rm -v docker-java-build/target:/src/app/target -v docker-java:/root/.m2 minh/docker-java-builder:4.0 clean package -Dmaven.test.skip=true`
+# build jar file        : `docker run -it --rm -v docker-java-build:/src/app/target -v docker-java:/root/.m2 minh/docker-java-builder:4.0 package -Dmaven.test.skip=true`
 # run app container     : `docker run --name docker-java -d -p 8080:8080 -v docker-java-build:/src/app -w /src/app openjdk:8-alpine /bin/sh -c 'java -jar docker-java-1.0-SNAPSHOT.jar'`
 
 # Build command breakdown #

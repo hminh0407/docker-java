@@ -17,9 +17,9 @@ RUN ["mvn", "package"]
 FROM openjdk:8-alpine
 
 WORKDIR src/app
-COPY --from=builder /src/app/target/docker-java-1.0-SNAPSHOT.jar src/app/docker-java-1.0-SNAPSHOT.jar
+COPY --from=builder /src/app/target/docker-java-1.0-SNAPSHOT.jar /src/app/docker-java-1.0-SNAPSHOT.jar
 
-CMD exec java -jar spring-tutorial-1.0-SNAPSHOT.jar
+CMD exec java -jar docker-java-1.0-SNAPSHOT.jar
 
 # Note #
 # This build reduce the size of the final image by containing only what need to be executed (the jar file)

@@ -1,11 +1,13 @@
-package tutorial.dao;
+package com.minh.docker.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import tutorial.model.User;
+import com.minh.docker.model.User;
+
 
 @Repository
 public class UserDao {
@@ -16,11 +18,13 @@ public class UserDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public User getUser (int id) {
-        String sql = "Select id,name,age From user where id=?";
+    @Cacheable("user")
+    public User getUser (long id) {
+        String sql = "Select user_id,user_name,email From users where user_id=?";
         return jdbcTemplate.queryForObject(
             sql,
-            new BeanPropertyRowMapper<>(User.class)
+            new BeanPropertyRowMapper<>(User.class),
+            id
         );
     }
 }

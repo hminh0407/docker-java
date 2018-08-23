@@ -1,4 +1,4 @@
-package tutorial.model;
+package com.minh.docker.model;
 
 public class Greeting {
     private final long   id;

@@ -1,0 +1,17 @@
+# This is a different profile build of ex2-1.docker-compose.yml with some modification of services hosts and ports.
+# The purpose is to demonstrate how to run multiple environment in local machine.
+version: '3.2'
+services:
+  redis:
+    ports:
+      - 46379:6379
+  postgres:
+    ports:
+      - 45432:5432
+  rest:
+    ports:
+      - 48080:8080
+    command: package exec:java -Dspring.datasource.url=jdbc:postgresql://qa_postgres_1:5432/docker-java -Dspring.redis.host=qa_redis_1
+# docker-compose -f ex2-1.docker-compose.yml -f ex2-1.docker-compose.qa.yml -p qa up -d redis
+# docker-compose -f ex2-1.docker-compose.yml -f ex2-1.docker-compose.qa.yml -p qa up -d postgres
+# docker-compose -f ex2-1.docker-compose.yml -f ex2-1.docker-compose.qa.yml -p qa up -d rest

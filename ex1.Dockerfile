@@ -1,4 +1,4 @@
-# example 1 - All in 1 Dockerfile
+# example 1 - Simple Dockerfile
 FROM maven:3.5-jdk-8-alpine
 
 WORKDIR /src/app

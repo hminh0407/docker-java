@@ -1,0 +1,43 @@
+# example 2-1 - Container orchestration - host network
+# By default docker run with network=bridge which mean docker will create its own private network and share the connection with host
+# Windows use a VM for docker machine, therefore network_mode=host point to VM localhost not the real localhost.
+# Therefore this example cannot run on Windows
+version: '3.2'
+services:
+  redis:
+    image: redis:4-alpine
+    network_mode: host
+    ports:
+    - 6379:6379
+  postgres:
+    image: postgres:10-alpine
+    network_mode: host
+    ports:
+    - 5432:5432
+    volumes:
+    - rest_postgres_dbstore:/var/lib/postgresql/data
+    - ./data/init:/docker-entrypoint-initdb.d
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: "docker-java"
+  rest:
+    image: maven:3.5-jdk-8-alpine
+    network_mode: host
+    ports:
+    - 8080:8080
+    depends_on:
+    - redis
+    - postgres
+    working_dir: /src/app
+    volumes:
+    - .:/src/app
+    - mvn_repo:/root/.m2
+    entrypoint: mvn
+    command: package exec:java -Dspring.datasource.url=jdbc:postgresql://localhost:5432/docker-java
+volumes:
+  mvn_repo:
+  rest_postgres_dbstore:
+# docker-compose -f ex2-2.docker-compose.yml -p dev up -d redis
+# docker-compose -f ex2-2.docker-compose.yml -p dev up -d postgres
+# docker-compose -f ex2-2.docker-compose.yml -p dev up -d rest

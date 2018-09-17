@@ -1,21 +1,23 @@
 # example 2-1 - Container orchestration - docker-compose startup
 # By default docker run with network=bridge which mean docker will create its own private network and share the connection with host
 # In order to container to connect with each other they must use name alias as host name (check the command of `rest`)
+
+# Troubleshoot #
+# For the multi-value options ports, expose, external_links, dns, dns_search, and tmpfs, Compose concatenates both sets of values
+# Therefore using ports as based configuration may lead to unwanted result. More detail can be found here: https://github.com/docker/compose/issues/2260
+# Until solution https://github.com/docker/compose/pull/5354 finish, we should put this type of config in override files
 version: '3.2'
 services:
   redis:
     image: redis:4-alpine
-    ports:
-    - 6379:6379
+    # ports:
+    # - 6379:6379 # should be put in overrided file
   postgres:
     image: postgres:10-alpine
-    ports:
-      - 5432:5432
+    # ports:
+    #   - 5432:5432 # should be put in overrided file
     volumes:
       - rest_postgres_dbstore:/var/lib/postgresql/data
-      # postgres image support db initialization
-      # initialization script should be put in /docker-entrypoint-initdb.d
-      # note that multiple script files will be executed in alphabet order
       - ./data/init:/docker-entrypoint-initdb.d
     environment:
       POSTGRES_USER: "postgres"
@@ -23,8 +25,8 @@ services:
       POSTGRES_DB: "docker-java"
   rest:
     image: maven:3.5-jdk-8-alpine
-    ports:
-      - 8080:8080
+    # ports:
+    #   - 8080:8080 # should be put in overrided file
     depends_on:
       - redis
       - postgres
@@ -35,8 +37,7 @@ services:
     entrypoint: mvn
     command: package exec:java -Dspring.datasource.url=jdbc:postgresql://dev_postgres_1:5432/docker-java -Dspring.redis.host=dev_redis_1
 volumes:
-  rest_postgres_dbstore:
   mvn_repo:
-# docker-compose -f ex2-1.docker-compose.yml -p dev up -d redis
-# docker-compose -f ex2-1.docker-compose.yml -p dev up -d postgres
-# docker-compose -f ex2-1.docker-compose.yml -p dev up -d rest
+  rest_postgres_dbstore:
+# this file should not be run directly
+# Check ex2-1-docker-compose.dev.yml for running script
